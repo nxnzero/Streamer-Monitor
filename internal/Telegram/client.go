@@ -7,10 +7,10 @@ import (
 )
 
 const (
-	TelegramURL         = "https://api.telegram.org/bot"
-	TelegramToken       = "8279530994:AAEbSWILEqLZridXVIWBX89r0umgfB8Q7KY" // Telegram
-	TelegramChatID      = "-1002551938305"
-	TelegramSendMessage = "https://api.telegram.org/bot8279530994:AAEbSWILEqLZridXVIWBX89r0umgfB8Q7KY/sendMessage" // Telegram
+	TelegramURL         = "" // Telegram
+	TelegramToken       = "" // Telegram
+	TelegramChatID      = "" // Telegram
+	TelegramSendMessage = "" // Telegram
 )
 
 func NewClientTelegram() *ClientTelegram {
