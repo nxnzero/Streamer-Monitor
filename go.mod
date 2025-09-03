@@ -1,3 +1,3 @@
-module LycorisFlower
+module LycorisMonitor
 
 go 1.24

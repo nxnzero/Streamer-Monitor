@@ -1,7 +1,7 @@
 package main
 
 import (
-	"LycorisFlower/internal/trovo"
+	"LycorisMonitor/internal/trovo"
 	"fmt"
 	"os"
 )
@@ -25,4 +25,5 @@ func main() {
 	}
 
 	fmt.Println(UserInfo) // Отображаем данные
+
 }
