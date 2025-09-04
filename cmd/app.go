@@ -1,13 +1,10 @@
 package main
 
 import (
+	Telegram "LycorisMonitor/internal/telegram"
 	"LycorisMonitor/internal/trovo"
 	"fmt"
 	"os"
-)
-
-const (
-	Nates13 = "Nates13"
 )
 
 var (
@@ -17,13 +14,29 @@ var (
 )
 
 func main() {
-	trc := trovo.NewTrovoClient() // Инициализируем клиент для Трово
-
-	UserInfo, err := trc.ChannelByUsername("Nates13") // Запрашиваем данные по стримеру
-	if err != nil {
-		fmt.Println(err)
+	channels := []string{
+		"Nates13",
+		"Мирилит",
+		"Леший",
+		"illusiveHope",
 	}
 
-	fmt.Println(UserInfo) // Отображаем данные
+	trc := trovo.NewTrovoClient()       // Инициализируем клиент для Trovo
+	tlc := Telegram.NewClientTelegram() // Инициализируем клиент для Telegram
 
+	// Добавить функцию проверки статуса
+
+	for _, channel := range channels {
+		UserInfo, err := trc.ChannelByUsername(channel) // Запрашиваем данные по стримеру
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		if UserInfo.IsLive { // запрашиваем статус
+			textMessage := fmt.Sprintf("@%v на связи!\nПриходи посмотреть: %v", UserInfo.Username, UserInfo.ChannelURL)
+			tlc.SendMessageWithPhoto("-1002551938305", textMessage, "disk.yandex.ru/i/XccYcEQK7TOq_g")
+		} else {
+
+		}
+	}
 }
