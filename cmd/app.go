@@ -1,6 +1,8 @@
 package main
 
 import (
+	"LycorisMonitor/internal/services"
+	streamers "LycorisMonitor/internal/streamers"
 	Telegram "LycorisMonitor/internal/telegram"
 	"LycorisMonitor/internal/trovo"
 	"fmt"
@@ -18,25 +20,70 @@ func main() {
 		"Nates13",
 		"Мирилит",
 		"Леший",
-		"illusiveHope",
+		"IllusiveHope",
+		"burzumwarik",
+		"Neorgan",
+		"Nastya_Siya",
+		"AdynAdynAdyn",
+		"Alfatsentavra",
+		"ottomine_emina",
 	}
 
 	trc := trovo.NewTrovoClient()       // Инициализируем клиент для Trovo
 	tlc := Telegram.NewClientTelegram() // Инициализируем клиент для Telegram
 
-	// Добавить функцию проверки статуса
+	allStreamers, err := streamers.ReadFromFile("./streamers.json")
+	if err != nil {
+		fmt.Printf("Error reading streamers file: %v\n", err)
+		return
+	}
+
+	// Создаем мапу для быстрого поиска стримеров по имени
+	streamerMap := make(map[string]*services.Streamer)
+	for i := range *allStreamers {
+		streamerMap[(*allStreamers)[i].Username] = &(*allStreamers)[i]
+	}
 
 	for _, channel := range channels {
-		UserInfo, err := trc.ChannelByUsername(channel) // Запрашиваем данные по стримеру
+		streamerInfo, err := trc.ChannelByUsername(channel)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Printf("Error getting channel info for %s: %v\n", channel, err)
+			continue
 		}
 
-		if UserInfo.IsLive { // запрашиваем статус
-			textMessage := fmt.Sprintf("@%v на связи!\nПриходи посмотреть: %v", UserInfo.Username, UserInfo.ChannelURL)
-			tlc.SendMessageWithPhoto("-1002551938305", textMessage, "disk.yandex.ru/i/XccYcEQK7TOq_g")
-		} else {
+		// Находим соответствующего стримера в нашем списке
+		streamerFL, exists := streamerMap[channel]
+		if !exists {
+			fmt.Printf("Streamer %s not found in local data\n", channel)
+			continue
+		}
 
+		// Проверяем изменение статуса
+		if streamerInfo.IsLive && !streamerFL.IsLive {
+			// Стример стал онлайн
+			message := fmt.Sprintf("%s на связи!\nСсылка на стрим: %s", channel, streamerInfo.ChannelURL)
+			err := tlc.SendMessageWithPhoto(Telegram.TelegramChatID, message, "https://disk.yandex.ru/i/cZbTlyuGbfPiTg")
+			if err != nil {
+				fmt.Printf("Error sending message: %v\n", err)
+			} else {
+				fmt.Printf("Notification sent: %s is now online\n", streamerInfo.Username)
+			}
+
+			streamerFL.IsLive = true
+			err = streamers.WriteToFile(allStreamers, "./streamers.json")
+			if err != nil {
+				fmt.Printf("Error saving streamer status: %v\n", err)
+			}
+		} else if !streamerInfo.IsLive && streamerFL.IsLive {
+			// Стример стал офлайн
+			streamerFL.IsLive = false
+			err = streamers.WriteToFile(allStreamers, "./streamers.json")
+			if err != nil {
+				fmt.Printf("Error saving streamer status: %v\n", err)
+			} else {
+				fmt.Printf("%s is now offline\n", streamerInfo.Username)
+			}
 		}
 	}
+
 }

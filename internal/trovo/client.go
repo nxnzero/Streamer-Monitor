@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net"
 	"net/http"
 	"os"
 	"strings"
+	"time"
 )
 
 const (
@@ -27,8 +29,24 @@ var (
 )
 
 func NewTrovoClient() *ClientTrovo {
+	transport := &http.Transport{
+		MaxIdleConns:        100,
+		MaxIdleConnsPerHost: 10,
+		IdleConnTimeout:     90 * time.Second,
+		DisableKeepAlives:   false,
+		DialContext: (&net.Dialer{
+			Timeout:   5 * time.Second,
+			KeepAlive: 30 * time.Second,
+		}).DialContext,
+		TLSHandshakeTimeout:   10 * time.Second,
+		ExpectContinueTimeout: 1 * time.Second,
+	}
+
 	return &ClientTrovo{
-		Client: &http.Client{},
+		Client: &http.Client{
+			Timeout:   10 * time.Second,
+			Transport: transport,
+		},
 	}
 }
 
@@ -94,12 +112,12 @@ func (clientTrovo *ClientTrovo) ChannelByID(channelID string) (*ChannelInfo, err
 	body := ChannelInfoByID{channelID}
 	bodyJSON, err := json.Marshal(body)
 	if err != nil {
-		return nil, jsonSerializationError
+		return nil, fmt.Errorf("failed to marshal request body: %w", err)
 	}
 
 	request, err := http.NewRequest("POST", URL_CHANNEL_INFO, bytes.NewBuffer(bodyJSON))
 	if err != nil {
-		return nil, creationRequestError
+		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
 	request.Header.Set("Accept", "application/json")
@@ -107,7 +125,7 @@ func (clientTrovo *ClientTrovo) ChannelByID(channelID string) (*ChannelInfo, err
 
 	response, err := clientTrovo.Client.Do(request)
 	if err != nil {
-		fmt.Println("Response status code:", response.StatusCode)
+		return nil, fmt.Errorf("failed to make request: %w", err)
 	}
 	if response == nil {
 		return nil, errors.New("response is nil")
@@ -129,12 +147,12 @@ func (clientTrovo *ClientTrovo) ChannelByUsername(username string) (*ChannelInfo
 	body := ChannelInfoByUsername{username}
 	bodyJSON, err := json.Marshal(body)
 	if err != nil {
-		return nil, jsonSerializationError
+		return nil, fmt.Errorf("failed to marshal request body: %w", err)
 	}
 
 	request, err := http.NewRequest("POST", URL_CHANNEL_INFO, bytes.NewBuffer(bodyJSON))
 	if err != nil {
-		return nil, creationRequestError
+		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
 	request.Header.Set("Accept", "application/json")
@@ -142,7 +160,7 @@ func (clientTrovo *ClientTrovo) ChannelByUsername(username string) (*ChannelInfo
 
 	response, err := clientTrovo.Client.Do(request)
 	if err != nil {
-		fmt.Println("Response status code:", response.StatusCode)
+		return nil, fmt.Errorf("failed to make request: %w", err)
 	}
 	if response == nil {
 		return nil, errors.New("response is nil")
