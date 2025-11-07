@@ -96,10 +96,10 @@ export TELEGRAM_CHAT_ID="your_telegram_chat_id"
 
 ```go
 channels := []string{
-    "Nates13",
-    "Мирилит",
-    "Леший",
-    "IllusiveHope",
+    "Nickname_1",
+    "Nickname_2",
+    "Nickname_3",
+    "Nickname_4",
 }
 ```
 
