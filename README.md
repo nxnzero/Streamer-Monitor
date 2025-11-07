@@ -18,7 +18,7 @@ Streamer-Monitor - это легковесное приложение на Go, �
 ## 🏗️ Архитектура
 
 ```
-LycorisMonitor/
+StreamerMonitor/
 ├── cmd/
 │   └── app.go                 # Главный файл приложения
 ├── internal/
