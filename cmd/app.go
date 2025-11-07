@@ -56,7 +56,7 @@ func main() {
 		if streamerInfo.IsLive && !streamerFL.IsLive {
 			// Стример стал онлайн
 			message := fmt.Sprintf("%s на связи!\nСсылка на стрим: %s", channel, streamerInfo.ChannelURL)
-			err := tlc.SendMessageWithPhoto(Telegram.TelegramChatID, message, "https://disk.yandex.ru/i/cZbTlyuGbfPiTg")
+			err := tlc.SendMessageWithPhoto(Telegram.TelegramChatID, message, "https://your_photo_hosting/path_to_file")
 			if err != nil {
 				fmt.Printf("Error sending message: %v\n", err)
 			} else {
