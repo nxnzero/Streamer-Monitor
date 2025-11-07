@@ -19,16 +19,8 @@ var (
 // Никнеймы стримеров через запятую
 func main() {
 	channels := []string{
-		"Nates13",
-		"Мирилит",
-		"Леший",
-		"IllusiveHope",
-		"burzumwarik",
-		"Neorgan",
-		"Nastya_Siya",
-		"AdynAdynAdyn",
-		"Alfatsentavra",
-		"ottomine_emina",
+		"Nickname1",
+		"Nickname2",
 	}
 
 	trc := trovo.NewTrovoClient()       // Инициализируем клиент для Trovo
