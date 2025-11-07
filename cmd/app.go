@@ -15,6 +15,8 @@ var (
 	RefreshToken = os.Getenv("TROVO_REFRESH_TOKEN")
 )
 
+
+// Никнеймы стримеров через запятую
 func main() {
 	channels := []string{
 		"Nates13",
