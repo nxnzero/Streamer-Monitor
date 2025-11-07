@@ -4,7 +4,7 @@
 
 ## 📋 Описание
 
-LycorisMonitor - это легковесное приложение на Go, которое отслеживает статус стримеров на платформе Trovo и отправляет уведомления в Telegram, когда стримеры выходят в эфир.
+Streamer-Monitor - это легковесное приложение на Go, которое отслеживает статус стримеров на платформе Trovo и отправляет уведомления в Telegram, когда стримеры выходят в эфир.
 
 ## ✨ Возможности
 
@@ -51,7 +51,7 @@ LycorisMonitor/
 
 ```bash
 git clone <repository-url>
-cd LycorisMonitor
+cd Streamer-Monitor
 ```
 
 ### 2. Настройка переменных окружения
@@ -77,7 +77,7 @@ export TELEGRAM_CHAT_ID="your_telegram_chat_id"
 ```json
 [
   {
-    "username": "Nates13",
+    "username": "Nickname_1",
     "isLive": false,
     "lastCheck": "2024-01-01T00:00:00Z",
     "previews": [
@@ -240,9 +240,9 @@ type TelegramClient interface {
 Приложение выводит логи в консоль:
 
 ```
-Notification sent: Nates13 is now online
-Streamer Мирилит is now offline
-Error getting channel info for Леший: connection timeout
+Notification sent: Nickname_1 is now online
+Streamer Nickname_1 is now offline
+Error getting channel info for Nickname_1: connection timeout
 ```
 
 ## 🤝 Вклад в проект
